@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 Pillow
 google-generativeai
 python-dotenv
+gunicorn

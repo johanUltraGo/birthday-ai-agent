@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: birthday-ai-agent
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: GEMINI_API_KEY
+        sync: false # Set this in the Render Dashboard
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SQLALCHEMY_DATABASE_URI
+        value: sqlite:///birthdays.db
+    # Note: Free tier storage is ephemeral. 
+    # For persistent data on Render Free tier, consider using their managed PostgreSQL.
