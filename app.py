@@ -82,5 +82,26 @@ def generate_poster(student_id):
     poster_url = poster_path.replace('static/', '')
     return render_template('view_poster.html', student=student, poster_url=poster_url, quote=quote)
 
+@app.route('/reports', methods=['GET'])
+def reports():
+    month = request.args.get('month', datetime.now().month, type=int)
+    students = Student.query.all()
+    
+    # Filter students by the selected month
+    monthly_birthdays = [s for s in students if s.birthday.month == month]
+    # Sort by day
+    monthly_birthdays.sort(key=lambda x: x.birthday.day)
+    
+    months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ]
+    
+    return render_template('reports.html', 
+                           students=monthly_birthdays, 
+                           current_month=month, 
+                           month_name=months[month-1],
+                           months=months)
+
 if __name__ == '__main__':
     app.run(debug=True)

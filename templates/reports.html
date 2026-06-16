@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">📅 Monthly Birthday Report: {{ month_name }}</h4>
+                <div class="dropdown">
+                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Select Month
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% for i in range(1, 13) %}
+                            <li><a class="dropdown-item" href="{{ url_for('reports', month=i) }}">{{ months[i-1] }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if students %}
+                    <div id="reportContent">
+                        <div class="text-center mb-4 d-none d-print-block">
+                            <h2>Birthday List - {{ month_name }}</h2>
+                            <hr>
+                        </div>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Day</th>
+                                    <th>Student Name</th>
+                                    <th>Class</th>
+                                    <th>Original Birthday</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                    <tr>
+                                        <td><strong>{{ student.birthday.day }}</strong></td>
+                                        <td>{{ student.name }}</td>
+                                        <td>{{ student.student_class }}</td>
+                                        <td>{{ student.birthday.strftime('%d %B %Y') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                        <button class="btn btn-primary" onclick="window.print()">Export to PDF / Print</button>
+                    </div>
+                {% else %}
+                    <p class="text-center my-4">No birthdays recorded for {{ month_name }}.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
