@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# Static files
+static/uploads/*
+!static/uploads/.gitkeep
+static/posters/*
+!static/posters/.gitkeep
+
+# IDEs
+.vscode/
+.idea/

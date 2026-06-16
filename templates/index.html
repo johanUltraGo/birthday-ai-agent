@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">🎉 Birthdays Today</h4>
+            </div>
+            <div class="card-body">
+                {% if birthdays_today %}
+                    <div class="row">
+                        {% for student in birthdays_today %}
+                            <div class="col-md-3 mb-3">
+                                <div class="card text-center h-100">
+                                    {% if student.photo_path %}
+                                        <img src="{{ url_for('static', filename=student.photo_path.replace('static/', '')) }}" class="card-img-top" alt="{{ student.name }}" style="height: 200px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                            <span class="text-muted">No Photo</span>
+                                        </div>
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ student.name }}</h5>
+                                        <p class="card-text text-muted">Class: {{ student.student_class }}</p>
+                                        <a href="{{ url_for('generate_poster', student_id=student.id) }}" class="btn btn-sm btn-outline-primary">Generate Poster</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-center my-4">No birthdays today. Check back tomorrow! 😊</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Student Registry</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Class</th>
+                            <th>Birthday</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td>{{ student.name }}</td>
+                                <td>{{ student.student_class }}</td>
+                                <td>{{ student.birthday.strftime('%d %b') }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info text-white">View</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

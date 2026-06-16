@@ -1,0 +1,5 @@
+Flask
+Flask-SQLAlchemy
+Pillow
+google-generativeai
+python-dotenv
