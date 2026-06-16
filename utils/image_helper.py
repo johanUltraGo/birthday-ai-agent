@@ -3,7 +3,8 @@ import os
 
 def create_birthday_poster(student_name, student_class, quote, student_photo_path=None, output_path="static/posters/"):
     """
-    Creates a birthday poster using Pillow.
+    DHAANESHWAR: Implement your Pillow poster generation logic here.
+    You can customize the layout, colors, and fonts as per your design.
     """
     if not os.path.exists(output_path):
         os.makedirs(output_path)

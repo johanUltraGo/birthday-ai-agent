@@ -8,7 +8,8 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 def generate_birthday_quote(student_name):
     """
-    Generates a personalized birthday quote for a student using Gemini AI.
+    DHAANESHWAR: Implement your Gemini API quote generation logic here.
+    The function should return a string containing the birthday wish.
     """
     model = genai.GenerativeModel('gemini-1.5-flash')
     prompt = f"Write a short, inspiring, and happy birthday wish for a student named {student_name}. Keep it under 20 words and suitable for a school environment."
