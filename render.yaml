@@ -11,7 +11,20 @@ services:
         sync: false # Set this in the Render Dashboard
       - key: SECRET_KEY
         generateValue: true
-      - key: SQLALCHEMY_DATABASE_URI
-        value: sqlite:///birthdays.db
-    # Note: Free tier storage is ephemeral. 
-    # For persistent data on Render Free tier, consider using their managed PostgreSQL.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: birthday-db
+          property: connectionString
+      - key: DATA_DIR
+        value: /data
+    disk:
+      name: birthday-data
+      mountPath: /data
+      sizeGB: 1
+
+databases:
+  - name: birthday-db
+    plan: free # Use 'free' for the free tier
+    # Note: Persistent Disks are a paid feature on Render. 
+    # If you are on the Free tier, use Render Managed PostgreSQL for the database
+    # and an external service like Cloudinary for image persistence.

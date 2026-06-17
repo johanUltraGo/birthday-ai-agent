@@ -13,3 +13,12 @@ class Student(db.Model):
 
     def __repr__(self):
         return f'<Student {self.name}>'
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.String(200), nullable=False)
+    status = db.Column(db.String(50), default='Sent')
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Notification {self.message}>'

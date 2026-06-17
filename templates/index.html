@@ -2,8 +2,8 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-12 mb-4">
-        <div class="card border-primary">
+    <div class="col-md-6 mb-4">
+        <div class="card border-primary h-100">
             <div class="card-header bg-primary text-white">
                 <h4 class="mb-0">🎉 Birthdays Today</h4>
             </div>
@@ -11,19 +11,19 @@
                 {% if birthdays_today %}
                     <div class="row">
                         {% for student in birthdays_today %}
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <div class="card text-center h-100">
                                     {% if student.photo_path %}
-                                        <img src="{{ url_for('static', filename=student.photo_path.replace('static/', '')) }}" class="card-img-top" alt="{{ student.name }}" style="height: 200px; object-fit: cover;">
+                                        <img src="{{ url_for('serve_upload', filename=student.photo_path | basename) }}" class="card-img-top" alt="{{ student.name }}" style="height: 150px; object-fit: cover;">
                                     {% else %}
-                                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
                                             <span class="text-muted">No Photo</span>
                                         </div>
                                     {% endif %}
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ student.name }}</h5>
-                                        <p class="card-text text-muted">Class: {{ student.student_class }}</p>
-                                        <a href="{{ url_for('generate_poster', student_id=student.id) }}" class="btn btn-sm btn-outline-primary">Generate Poster</a>
+                                    <div class="card-body p-2">
+                                        <h6 class="card-title mb-1">{{ student.name }}</h6>
+                                        <p class="card-text small text-muted mb-2">Class: {{ student.student_class }}</p>
+                                        <a href="{{ url_for('generate_poster', student_id=student.id) }}" class="btn btn-sm btn-outline-primary py-0">Generate Poster</a>
                                     </div>
                                 </div>
                             </div>
@@ -32,6 +32,53 @@
                 {% else %}
                     <p class="text-center my-4">No birthdays today. Check back tomorrow! 😊</p>
                 {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card border-info h-100">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">📅 Upcoming Birthdays</h4>
+            </div>
+            <div class="card-body">
+                {% if upcoming_birthdays %}
+                    <ul class="list-group list-group-flush">
+                        {% for student in upcoming_birthdays %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ student.name }}</strong> ({{ student.student_class }})
+                                    <br>
+                                    <small class="text-muted">{{ student.birthday.strftime('%d %b') }}</small>
+                                </div>
+                                <span class="badge bg-info rounded-pill">In a few days</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-center my-4">No upcoming birthdays in the next 7 days.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card border-secondary">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">🔔 System Activity Log</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for notif in notifications %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <span>{{ notif.message }}</span>
+                            <small class="text-muted">{{ notif.timestamp.strftime('%H:%M:%S') }} - <span class="badge bg-success">{{ notif.status }}</span></small>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item text-center text-muted">No recent activity.</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>
@@ -60,7 +107,7 @@
                                 <td>{{ student.student_class }}</td>
                                 <td>{{ student.birthday.strftime('%d %b') }}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-info text-white">View</button>
+                                    <a href="{{ url_for('generate_poster', student_id=student.id) }}" class="btn btn-sm btn-info text-white">Generate Poster</a>
                                 </td>
                             </tr>
                         {% endfor %}
