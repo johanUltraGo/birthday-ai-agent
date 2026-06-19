@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-dark text-white text-center py-4 rounded-top-4">
+                <h4 class="mb-0">🔑 Register New User</h4>
+                <p class="mb-0 opacity-75 small">Admin User Management Portal</p>
+            </div>
+            <div class="card-body p-4">
+                <form action="{{ url_for('register_user') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control rounded-3" id="username" name="username" required placeholder="Enter unique username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control rounded-3" id="password" name="password" required placeholder="Enter secure password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">System Role</label>
+                        <select class="form-select rounded-3" id="role" name="role" required>
+                            <option value="Teacher">Teacher (Manage student data, view reports)</option>
+                            <option value="Office">Office Staff (Manage student data, view reports)</option>
+                            <option value="Media Team">Media Team (View birthdays, generate/share posters)</option>
+                            <option value="Admin">System Administrator (Full access, manage users)</option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-dark btn-lg rounded-3 shadow-sm">Create Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4 shadow-sm border-0 rounded-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Existing System Users</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr class="table-light">
+                            <th class="ps-4">Username</th>
+                            <th>Role</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td class="ps-4 align-middle font-monospace">{{ user.username }}</td>
+                            <td class="align-middle">
+                                {% if user.role == 'Admin' %}
+                                <span class="badge bg-danger">{{ user.role }}</span>
+                                {% elif user.role == 'Media Team' %}
+                                <span class="badge bg-primary">{{ user.role }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ user.role }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4">
+                                {% if session.get('user_id') != user.id %}
+                                <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                    <button class="btn btn-sm btn-outline-danger border-0" type="submit">Delete</button>
+                                </form>
+                                {% else %}
+                                <span class="text-muted small italic">Logged In</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

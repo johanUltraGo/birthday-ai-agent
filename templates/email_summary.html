@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Birthday Summary</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            background-color: #ffffff;
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .header {
+            background-color: #0066cc;
+            color: #ffffff;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .content {
+            padding: 30px 25px;
+        }
+        .section-title {
+            font-size: 18px;
+            color: #0066cc;
+            border-bottom: 2px solid #eef2f5;
+            padding-bottom: 8px;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .student-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background-color: #f8fafc;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 4px solid #0066cc;
+        }
+        .student-item.upcoming {
+            border-left: 4px solid #17a2b8;
+            background-color: #f1f9fb;
+        }
+        .student-details {
+            margin-left: 10px;
+        }
+        .student-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+        .student-class {
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+        .footer {
+            background-color: #eef2f5;
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎂 Birthday Reminder AI Agent</h1>
+            <p style="margin: 5px 0 0 0; opacity: 0.9;">Daily Celebration Report &bull; {{ today.strftime('%d %b %Y') }}</p>
+        </div>
+        <div class="content">
+            
+            {% if birthdays_today %}
+                <h2 class="section-title">🎉 Celebrating Today</h2>
+                {% for student in birthdays_today %}
+                    <div class="student-item">
+                        <div class="student-details">
+                            <div class="student-name">{{ student.name }}</div>
+                            <div class="student-class">Grade / Class: {{ student.student_class }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <h2 class="section-title">🎉 Celebrating Today</h2>
+                <p style="color: #7f8c8d; font-style: italic;">No student birthdays today.</p>
+            {% endif %}
+
+            {% if upcoming_birthdays %}
+                <h2 class="section-title" style="margin-top: 30px; color: #17a2b8;">📅 Upcoming Birthdays (Next 7 Days)</h2>
+                {% for student in upcoming_birthdays %}
+                    <div class="student-item upcoming">
+                        <div class="student-details">
+                            <div class="student-name">{{ student.name }}</div>
+                            <div class="student-class">Grade / Class: {{ student.student_class }} &bull; Birthday: {{ student.birthday.strftime('%d %b') }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+        <div class="footer">
+            This is an automated notification from the Birthday Reminder AI Agent.<br>
+            School Media, Office & Teachers Portal.
+        </div>
+    </div>
+</body>
+</html>

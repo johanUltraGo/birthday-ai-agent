@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Bulk Import Students</h4>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('import_students') }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="csv_file" class="form-label">Choose CSV File</label>
+                        <input type="file" class="form-control" id="csv_file" name="csv_file" accept=".csv" required>
+                    </div>
+                    
+                    <div class="alert alert-light border small mb-3">
+                        <h6><strong>CSV File Format Requirements:</strong></h6>
+                        <ul class="mb-0 ps-3">
+                            <li>The first line (header) must be: <code>name,class,birthday</code></li>
+                            <li>The date format for birthdays must be <code>YYYY-MM-DD</code> (e.g. 2012-10-24)</li>
+                            <li>Each student must have all three columns filled</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6>Example content:</h6>
+                        <pre class="bg-light p-2 border rounded"><code>name,class,birthday
+John Doe,4-A,2016-04-12
+Sarah Connor,5-B,2015-08-23
+Dhaaneshwar S,6-A,2014-12-05</code></pre>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-info text-white">Import Students</button>
+                        <a href="{{ url_for('index') }}" class="btn btn-light">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

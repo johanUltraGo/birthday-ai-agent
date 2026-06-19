@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white">
+                <h4 class="mb-0">Edit Student Details</h4>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('edit_student', student_id=student.id) }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ student.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="class" class="form-label">Class / Grade</label>
+                        <input type="text" class="form-control" id="class" name="class" value="{{ student.student_class }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="birthday" class="form-label">Birthday</label>
+                        <input type="date" class="form-control" id="birthday" name="birthday" value="{{ student.birthday.strftime('%Y-%m-%d') }}" required>
+                    </div>
+                    
+                    {% if student.photo_path %}
+                    <div class="mb-3">
+                        <label class="form-label d-block">Current Photo</label>
+                        <img src="{{ url_for('serve_upload', filename=student.photo_path | basename) }}" class="img-thumbnail mb-2" style="max-height: 150px;">
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="photo" class="form-label">Upload New Photo (optional)</label>
+                        <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{{ url_for('index') }}" class="btn btn-light">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
