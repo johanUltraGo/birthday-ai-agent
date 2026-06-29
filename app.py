@@ -348,7 +348,8 @@ def index():
                            notifications=notifications,
                            generated_wishes=generated_wishes,
                            generated_wishes_count=generated_wishes_count,
-                           today=today)
+                           today=today,
+                           datetime=datetime)
 
 @app.cli.command("sync-sheet")
 def sync_sheet_command():
