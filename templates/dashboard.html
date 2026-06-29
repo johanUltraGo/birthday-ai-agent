@@ -1,0 +1,520 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Outfit and Inter Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+<div class="container py-2">
+    <!-- Premium Header -->
+    <div class="premium-header animated-fade">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="badge mb-3 text-uppercase fw-bold" style="font-size: 0.75rem; background: linear-gradient(135deg, #a855f7, #ec4899); border: none; padding: 0.4rem 0.8rem; border-radius: 50px;">
+                    ✨ AI Celebrations Hub
+                </span>
+                <h1 class="display-6 fw-bold mb-2"><span class="gradient-text">Birthday AI Agent 🎂</span></h1>
+                <p class="lead opacity-75 mb-0" style="font-size: 1.05rem; font-weight: 300;">
+                    Your intelligent companion for creating personalized, AI-crafted birthday wishes, custom celebration posters, and seamless WhatsApp communication.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                {% if session.get('role') in ['Admin', 'Teacher', 'Office'] %}
+                    <a href="{{ url_for('add_student') }}" class="btn btn-light fw-bold rounded-pill px-4 py-2 border-0 shadow-sm me-2 text-primary hover-up">
+                        <i class="bi bi-person-plus-fill me-1"></i> Add Student
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stat Cards -->
+    <div class="row mb-4 animated-fade">
+        <!-- Today's Birthdays -->
+        <div class="col-md-4 mb-3 mb-md-0">
+            <div class="glass-card p-4 h-100 d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-uppercase small fw-bold text-muted mb-2">Today's Celebrations</h6>
+                    <h2 class="mb-0 fw-bold" style="font-size: 2.2rem; color: #1e1b4b;">{{ birthdays_today|length }}</h2>
+                    <p class="text-success small mb-0 mt-1 fw-medium">
+                        {% if birthdays_today|length > 0 %}
+                            <i class="bi bi-balloon-fill"></i> Birthdays in progress!
+                        {% else %}
+                            No celebrations today
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="stat-card-icon icon-pink shadow-sm">
+                    <i class="bi bi-cake2-fill"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Upcoming Birthdays -->
+        <div class="col-md-4 mb-3 mb-md-0">
+            <div class="glass-card p-4 h-100 d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-uppercase small fw-bold text-muted mb-2">Upcoming Queue</h6>
+                    <h2 class="mb-0 fw-bold" style="font-size: 2.2rem; color: #1e1b4b;">{{ upcoming_birthdays|length }}</h2>
+                    <p class="text-muted small mb-0 mt-1">Next 7 days</p>
+                </div>
+                <div class="stat-card-icon icon-blue shadow-sm">
+                    <i class="bi bi-calendar-event-fill"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generated Messages Count -->
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-uppercase small fw-bold text-muted mb-2">AI Wishes Generated</h6>
+                    <h2 class="mb-0 fw-bold" id="wishes-counter" style="font-size: 2.2rem; color: #1e1b4b;">{{ generated_wishes_count }}</h2>
+                    <p class="text-primary small mb-0 mt-1 fw-medium"><i class="bi bi-cpu-fill"></i> Powered by Gemini AI</p>
+                </div>
+                <div class="stat-card-icon icon-purple shadow-sm">
+                    <i class="bi bi-magic"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="d-flex justify-content-between align-items-center mb-4 animated-fade">
+        <ul class="nav nav-pills" id="dashboardTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active me-2" id="ai-studio-tab" data-bs-toggle="pill" data-bs-target="#ai-studio" type="button" role="tab" aria-controls="ai-studio" aria-selected="true">
+                    <i class="bi bi-stars"></i> AI Celebrations Studio
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="student-directory-tab" data-bs-toggle="pill" data-bs-target="#student-directory" type="button" role="tab" aria-controls="student-directory" aria-selected="false">
+                    <i class="bi bi-database"></i> Student Directory
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Tab Contents -->
+    <div class="tab-content" id="dashboardTabsContent">
+        
+        <!-- TAB 1: AI STUDIO -->
+        <div class="tab-pane fade show active" id="ai-studio" role="tabpanel" aria-labelledby="ai-studio-tab">
+            <div class="row">
+                <!-- Left Column: AI Assistant Panel -->
+                <div class="col-lg-7 mb-4">
+                    <div class="ai-panel p-4 h-100 shadow animated-fade">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="mb-0 fw-bold"><i class="bi bi-cpu text-purple-gradient me-2"></i> AI Birthday Wish Generator</h4>
+                            <span class="badge bg-light text-dark fw-bold border" style="font-size: 0.75rem;">Model: Gemini 1.5 Flash</span>
+                        </div>
+                        <p class="text-light opacity-75 small mb-4">
+                            Draft premium, tailor-made messages. Let Google Gemini generate heart-touching, professional, or funny birthday greetings instantly.
+                        </p>
+                        
+                        <form id="ai-wish-form">
+                            <!-- Name Input -->
+                            <div class="mb-3">
+                                <label for="wish-name" class="form-label small fw-bold text-light opacity-90">Recipient Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white bg-opacity-10 border-0 text-white"><i class="bi bi-person"></i></span>
+                                    <input type="text" class="form-control ai-input" id="wish-name" placeholder="Enter recipient's name..." required>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="text-light opacity-50 small">Quick select student:</span>
+                                    <select class="form-select ai-select d-inline-block w-auto py-1 px-2 ms-1 text-xs" style="font-size: 0.8rem;" id="quick-student-select">
+                                        <option value="">-- Choose student --</option>
+                                        {% for s in students %}
+                                            <option value="{{ s.name }}">{{ s.name }} ({{ s.student_class }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Relationship & Style Row -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="wish-relationship" class="form-label small fw-bold text-light opacity-90">Relationship</label>
+                                    <select class="form-select ai-select" id="wish-relationship">
+                                        <option value="Student" selected>🎓 Student</option>
+                                        <option value="Teacher">👩‍🏫 Teacher</option>
+                                        <option value="Colleague">💼 Colleague</option>
+                                        <option value="Friend">🤝 Friend</option>
+                                        <option value="Parent">🏡 Parent</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="wish-style" class="form-label small fw-bold text-light opacity-90">Style Tone</label>
+                                    <select class="form-select ai-select" id="wish-style">
+                                        <option value="Emotional" selected>❤️ Emotional / Sincere</option>
+                                        <option value="Funny">😜 Funny / Playful</option>
+                                        <option value="Professional">👔 Professional / Encouraging</option>
+                                        <option value="Short">⚡ Short / Punchy</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Generate Button -->
+                            <button type="submit" class="btn glow-btn w-100 py-3 mt-2 d-flex align-items-center justify-content-center" id="btn-generate">
+                                <span class="spinner-border spinner-border-sm me-2 d-none" id="btn-spinner" role="status" aria-hidden="true"></span>
+                                <i class="bi bi-sparkles me-2" id="btn-icon"></i> <span id="btn-text">Generate Birthday Wish</span>
+                            </button>
+                        </form>
+
+                        <!-- Generated Output Block -->
+                        <div class="mt-4 pt-3 border-top border-secondary border-opacity-30 d-none" id="output-block">
+                            <h6 class="text-uppercase small fw-bold text-light opacity-90 mb-2">Generated Output:</h6>
+                            <div class="wish-bubble mb-3">
+                                <p class="mb-0 fs-5 text-white" id="generated-wish-text"></p>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2">
+                                <button type="button" class="btn btn-sm btn-outline-light rounded-pill px-3" id="btn-copy">
+                                    <i class="bi bi-clipboard me-1"></i> Copy Message
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Celebrations & Activity -->
+                <div class="col-lg-5 mb-4">
+                    <!-- Today's Celebrations Queue -->
+                    <div class="glass-card p-4 mb-4 animated-fade" style="animation-delay: 0.1s;">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-balloon text-pink-gradient me-2"></i> Celebrating Today</h5>
+                        {% if birthdays_today %}
+                            <div class="list-group list-group-flush">
+                                {% for student in birthdays_today %}
+                                    <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center p-3 border-0 border-bottom border-light">
+                                        <div class="d-flex align-items-center">
+                                            {% if student.photo_path %}
+                                                <img src="{{ url_for('serve_upload', filename=student.photo_path | basename) }}" class="rounded-circle border me-3" alt="{{ student.name }}" style="width: 48px; height: 48px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center border me-3" style="width: 48px; height: 48px;">
+                                                    <span class="text-muted small"><i class="bi bi-person"></i></span>
+                                                </div>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-0 fw-bold">{{ student.name }} 🎉</h6>
+                                                <small class="text-muted"><i class="bi bi-mortarboard"></i> Class: {{ student.student_class }}</small>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            {% if session.get('role') in ['Admin', 'Media Team'] %}
+                                                <a href="{{ url_for('generate_poster', student_id=student.id) }}" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
+                                                    <i class="bi bi-palette"></i> Create Poster
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4 text-muted">
+                                <span class="fs-2"><i class="bi bi-cup-hot"></i></span>
+                                <p class="small mb-0 mt-2">No student birthdays today.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Upcoming queue -->
+                    <div class="glass-card p-4 mb-4 animated-fade" style="animation-delay: 0.2s;">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-calendar3 text-blue-gradient me-2"></i> Upcoming Birthdays</h5>
+                        {% if upcoming_birthdays %}
+                            <div class="list-group list-group-flush" style="max-height: 250px; overflow-y: auto;">
+                                {% for student in upcoming_birthdays %}
+                                    <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center p-2 border-0 border-bottom border-light">
+                                        <div class="d-flex align-items-center">
+                                            {% if student.photo_path %}
+                                                <img src="{{ url_for('serve_upload', filename=student.photo_path | basename) }}" class="rounded-circle me-3" alt="{{ student.name }}" style="width: 36px; height: 36px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                                                    <span class="text-muted text-xs"><i class="bi bi-person"></i></span>
+                                                </div>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-0 fw-semibold" style="font-size: 0.95rem;">{{ student.name }}</h6>
+                                                <small class="text-muted font-sans" style="font-size: 0.78rem;">
+                                                    {{ student.birthday.strftime('%d %b') }} &bull; Class {{ student.student_class }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-light text-dark border rounded-pill py-1 px-2" style="font-size: 0.7rem;">
+                                            In {{ (datetime(today.year, student.birthday.month, student.birthday.day).date() - today).days if student.birthday.month >= today.month else 'Soon' }}d
+                                        </span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-3 text-muted">
+                                <span class="fs-3"><i class="bi bi-check-circle"></i></span>
+                                <p class="small mb-0 mt-1">No upcoming birthdays (next 7 days).</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row: Message History & Log -->
+            <div class="row">
+                <!-- Left Column: Message History -->
+                <div class="col-md-7 mb-4">
+                    <div class="glass-card p-4 animated-fade">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-chat-heart text-purple-gradient me-2"></i> Recent AI Wishes History</h5>
+                        <div id="wishes-history-list" class="pe-2" style="max-height: 400px; overflow-y: auto;">
+                            {% for wish in generated_wishes %}
+                                <div class="wish-bubble-white mb-3 animated-fade">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <span class="badge bg-purple bg-opacity-10 text-primary border border-primary border-opacity-20 me-1" style="font-size: 0.7rem;">
+                                                To: {{ wish.recipient_name }}
+                                            </span>
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 0.7rem;">
+                                                {{ wish.relationship }} &bull; {{ wish.style }}
+                                            </span>
+                                        </div>
+                                        <small class="text-muted" style="font-size: 0.75rem;">{{ wish.timestamp.strftime('%d %b %H:%M') }}</small>
+                                    </div>
+                                    <p class="mb-0 small text-dark fs-6 font-sans italic">"{{ wish.wish_text }}"</p>
+                                </div>
+                            {% else %}
+                                <div class="text-center py-5 text-muted" id="no-wishes-placeholder">
+                                    <span class="fs-1"><i class="bi bi-chat-quote-fill opacity-50"></i></span>
+                                    <p class="small mb-0 mt-2">No wishes generated yet. Try it now above!</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Recent Activity Logs -->
+                <div class="col-md-5 mb-4">
+                    <div class="glass-card p-4 animated-fade">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-activity text-blue-gradient me-2"></i> System Activity Log</h5>
+                        <ul class="list-group list-group-flush bg-transparent">
+                            {% for notif in notifications %}
+                                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3 px-0 border-0 border-bottom border-light">
+                                    <span class="small"><i class="bi bi-info-circle text-primary me-2"></i> {{ notif.message }}</span>
+                                    <span class="badge bg-light text-success border font-monospace" style="font-size: 0.7rem;">{{ notif.status }}</span>
+                                </li>
+                            {% else %}
+                                <li class="list-group-item bg-transparent text-center text-muted py-4 border-0">No recent activity.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: STUDENT DIRECTORY (REGISTRY) -->
+        <div class="tab-pane fade" id="student-directory" role="tabpanel" aria-labelledby="student-directory-tab">
+            <div class="glass-card p-4 animated-fade">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="mb-1 fw-bold"><i class="bi bi-people-fill text-blue-gradient me-2"></i> Student Directory Database</h4>
+                        <p class="text-muted small mb-0">Manage active student registry entries, upload photos, and initiate poster compositions.</p>
+                    </div>
+                    {% if session.get('role') in ['Admin', 'Teacher', 'Office'] %}
+                        <div>
+                            <a href="{{ url_for('add_student') }}" class="btn btn-primary rounded-pill px-3 shadow-sm btn-sm me-2"><i class="bi bi-plus-circle-fill"></i> Add Student</a>
+                            <a href="{{ url_for('import_students') }}" class="btn btn-outline-secondary rounded-pill px-3 btn-sm"><i class="bi bi-file-earmark-arrow-up-fill"></i> Bulk CSV Import</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table custom-table align-middle">
+                        <thead>
+                            <tr class="text-muted small" style="border-bottom: 2px solid #f1f5f9;">
+                                <th class="ps-4">Profile</th>
+                                <th>Name</th>
+                                <th>Class Room</th>
+                                <th>Birthdate Date</th>
+                                <th class="text-end pe-4">Actions Studio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                                <tr>
+                                    <td class="ps-4">
+                                        {% if student.photo_path %}
+                                            <img src="{{ url_for('serve_upload', filename=student.photo_path | basename) }}" class="rounded-circle border" alt="{{ student.name }}" style="width: 44px; height: 44px; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
+                                        {% else %}
+                                            <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                                                <span class="text-muted small"><i class="bi bi-person-fill fs-5"></i></span>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="fw-bold text-dark">{{ student.name }}</td>
+                                    <td><span class="badge bg-light text-primary border rounded-pill px-3 py-2">{{ student.student_class }}</span></td>
+                                    <td><i class="bi bi-calendar-check text-muted me-1"></i> {{ student.birthday.strftime('%d %B %Y') }}</td>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group" role="group">
+                                            {% if session.get('role') in ['Admin', 'Media Team'] %}
+                                                <a href="{{ url_for('generate_poster', student_id=student.id) }}" class="btn btn-sm btn-outline-primary px-3 rounded-start-pill"><i class="bi bi-palette-fill"></i> Poster</a>
+                                            {% endif %}
+                                            
+                                            {% if session.get('role') in ['Admin', 'Teacher', 'Office'] %}
+                                                <a href="{{ url_for('edit_student', student_id=student.id) }}" class="btn btn-sm btn-outline-secondary px-3"><i class="bi bi-pencil-fill"></i> Edit</a>
+                                                <form action="{{ url_for('delete_student', student_id=student.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to remove {{ student.name }} from the system database?');">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger px-3 rounded-end-pill"><i class="bi bi-trash3-fill"></i> Delete</button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <div class="mb-3"><i class="bi bi-database-exclamation display-3 text-secondary"></i></div>
+                                        <p class="fw-semibold">No student records found in the database.</p>
+                                        <p class="small text-muted">Get started by manually adding a student or importing a student roster file.</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- AJAX Dynamic AI Wishes script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const aiForm = document.getElementById('ai-wish-form');
+    const quickSelect = document.getElementById('quick-student-select');
+    const wishNameInput = document.getElementById('wish-name');
+    const wishRelationshipSelect = document.getElementById('wish-relationship');
+    const wishStyleSelect = document.getElementById('wish-style');
+    const btnGenerate = document.getElementById('btn-generate');
+    const btnSpinner = document.getElementById('btn-spinner');
+    const btnIcon = document.getElementById('btn-icon');
+    const btnText = document.getElementById('btn-text');
+    const outputBlock = document.getElementById('output-block');
+    const generatedWishText = document.getElementById('generated-wish-text');
+    const btnCopy = document.getElementById('btn-copy');
+    const wishesCounter = document.getElementById('wishes-counter');
+    const wishesHistoryList = document.getElementById('wishes-history-list');
+    const noWishesPlaceholder = document.getElementById('no-wishes-placeholder');
+
+    // Quick selection handler
+    quickSelect.addEventListener('change', function() {
+        if (quickSelect.value) {
+            wishNameInput.value = quickSelect.value;
+            wishRelationshipSelect.value = "Student";
+        }
+    });
+
+    // Copy to clipboard handler
+    btnCopy.addEventListener('click', function() {
+        const textToCopy = generatedWishText.textContent;
+        navigator.clipboard.writeText(textToCopy).then(function() {
+            const originalHTML = btnCopy.innerHTML;
+            btnCopy.innerHTML = '<i class="bi bi-check-lg me-1 text-success"></i> Copied!';
+            btnCopy.classList.remove('btn-outline-light');
+            btnCopy.classList.add('btn-light');
+            setTimeout(function() {
+                btnCopy.innerHTML = originalHTML;
+                btnCopy.classList.remove('btn-light');
+                btnCopy.classList.add('btn-outline-light');
+            }, 2000);
+        }).catch(err => {
+            console.error('Could not copy wish text: ', err);
+        });
+    });
+
+    // Form submission handler
+    aiForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = wishNameInput.value.trim();
+        const relationship = wishRelationshipSelect.value;
+        const style = wishStyleSelect.value;
+
+        if (!name) return;
+
+        // Set generating state UI
+        btnGenerate.disabled = true;
+        btnSpinner.classList.remove('d-none');
+        btnIcon.classList.add('d-none');
+        btnText.textContent = "AI is drafting the perfect wish...";
+        outputBlock.classList.add('d-none');
+
+        fetch('/api/generate_wish', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                relationship: relationship,
+                style: style
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('AI Generator encountered a network difficulty.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Populate generated wish
+                generatedWishText.textContent = data.wish;
+                outputBlock.classList.remove('d-none');
+                
+                // Animate output block
+                outputBlock.classList.add('animated-fade');
+                
+                // Update generated wishes counter
+                if (wishesCounter) {
+                    let currentCount = parseInt(wishesCounter.textContent) || 0;
+                    wishesCounter.textContent = currentCount + 1;
+                }
+
+                // Add to history list dynamically
+                if (noWishesPlaceholder) {
+                    noWishesPlaceholder.remove();
+                }
+
+                const newHistoryHTML = `
+                    <div class="wish-bubble-white mb-3 animated-fade">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <span class="badge bg-purple bg-opacity-10 text-primary border border-primary border-opacity-20 me-1" style="font-size: 0.7rem;">
+                                    To: ${data.recipient_name}
+                                </span>
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 0.7rem;">
+                                    ${data.relationship} &bull; ${data.style}
+                                </span>
+                            </div>
+                            <small class="text-muted" style="font-size: 0.75rem;">${data.timestamp}</small>
+                        </div>
+                        <p class="mb-0 small text-dark fs-6 font-sans italic">"${data.wish}"</p>
+                    </div>
+                `;
+                
+                wishesHistoryList.insertAdjacentHTML('afterbegin', newHistoryHTML);
+            } else {
+                alert('Error: ' + (data.error || 'Failed to generate wish message.'));
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            alert('An unexpected error occurred while contacting the Gemini AI engine. Verify that your GEMINI_API_KEY environment variable is configured.');
+        })
+        .finally(() => {
+            // Restore button UI
+            btnGenerate.disabled = false;
+            btnSpinner.classList.add('d-none');
+            btnIcon.classList.remove('d-none');
+            btnText.textContent = "Generate Birthday Wish";
+        });
+    });
+});
+</script>
+{% endblock %}

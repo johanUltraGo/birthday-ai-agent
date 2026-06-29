@@ -26,6 +26,9 @@ The **Birthday Reminder AI Agent** is a professional school management tool desi
 - [x] **WhatsApp API Integration:** Automate sending posters directly to parents via Twilio or WhatsApp Business API.
 - [x] **Email Notifications:** Automatic morning reports sent to teachers via SMTP.
 - [x] **Bulk Data Import:** Support for CSV/Excel uploads for student registries.
+- [x] **Roster Schema Expansion:** Added father name, dual contact numbers, and corrections fields for full school roster import.
+- [x] **Google Sheets Compatibility:** Sync now accepts school-style sheet headers and `DD.MM.YYYY` birthday values.
+- [x] **Passwordless Login:** Removed password entry from the local user login flow.
 
 
 ---

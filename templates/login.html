@@ -6,17 +6,13 @@
         <div class="card shadow-lg border-0 rounded-4">
             <div class="card-header bg-primary text-white text-center py-4 rounded-top-4">
                 <h3 class="mb-0">🎂 School Birthday Agent</h3>
-                <p class="mb-0 opacity-75 small">Secure Portal Login</p>
+                <p class="mb-0 opacity-75 small">Username Login</p>
             </div>
             <div class="card-body p-4">
                 <form action="{{ url_for('login') }}" method="POST">
                     <div class="mb-3">
                         <label for="username" class="form-label font-monospace small">Username</label>
                         <input type="text" class="form-control form-control-lg rounded-3" id="username" name="username" required placeholder="Enter username">
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label font-monospace small">Password</label>
-                        <input type="password" class="form-control form-control-lg rounded-3" id="password" name="password" required placeholder="Enter password">
                     </div>
                     
                     <div class="d-grid mt-4">
@@ -30,7 +26,7 @@
         <div class="alert alert-info text-center mt-3 shadow-sm rounded-3">
             <strong>Welcome!</strong> No users exist in the system yet.<br>
             Please log in with the default admin account:<br>
-            Username: <code>admin</code> | Password: <code>admin123</code>
+            Username: <code>admin</code>
         </div>
         {% endif %}
     </div>

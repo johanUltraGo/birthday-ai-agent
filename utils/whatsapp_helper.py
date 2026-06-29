@@ -15,6 +15,10 @@ def send_whatsapp_poster(parent_phone, student_name, poster_url):
 
     if not account_sid or not auth_token or not from_number:
         return False, "Twilio credentials are not fully configured in environment variables."
+    if not poster_url:
+        return False, "Poster URL is missing."
+    if not parent_phone:
+        return False, "Parent WhatsApp number is missing."
 
     # Standardize phone number format
     to_number = parent_phone.strip()

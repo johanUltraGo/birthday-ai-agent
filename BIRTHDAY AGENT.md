@@ -76,19 +76,13 @@
 
 * # Database Management
 
-* # Testing & Integration
-
-* # Deployment
-
-### Dhaaneshwar
-
 * # AI Development
 
 * # Gemini API Integration
 
-* # Birthday Quote Generator
+* # Testing & Integration
 
-* # Poster Generation System
+* # Deployment
 
 ## Technology Stack
 

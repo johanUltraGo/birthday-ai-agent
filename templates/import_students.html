@@ -13,11 +13,21 @@
                         <label for="csv_file" class="form-label">Choose CSV File</label>
                         <input type="file" class="form-control" id="csv_file" name="csv_file" accept=".csv" required>
                     </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="wipe_db" name="wipe_db" value="true">
+                        <label class="form-check-label text-danger fw-semibold" for="wipe_db">
+                            Clear all existing student records before importing
+                        </label>
+                        <div class="form-text">Warning: Checking this will delete all currently saved students.</div>
+                    </div>
                     
                     <div class="alert alert-light border small mb-3">
                         <h6><strong>CSV File Format Requirements:</strong></h6>
                         <ul class="mb-0 ps-3">
-                            <li>The first line (header) must be: <code>name,class,birthday</code></li>
+                            <li>The first line (header) must be: <code>name,class,birthday,father_name,contact_number_1,contact_number_2,corrections,parent_phone</code></li>
+                            <li><code>father_name</code>, <code>contact_number_1</code>, <code>contact_number_2</code>, and <code>corrections</code> are optional but supported</li>
+                            <li>Optional WhatsApp column: <code>parent_phone</code></li>
                             <li>The date format for birthdays must be <code>YYYY-MM-DD</code> (e.g. 2012-10-24)</li>
                             <li>Each student must have all three columns filled</li>
                         </ul>
@@ -25,10 +35,10 @@
 
                     <div class="mb-3">
                         <h6>Example content:</h6>
-                        <pre class="bg-light p-2 border rounded"><code>name,class,birthday
-John Doe,4-A,2016-04-12
-Sarah Connor,5-B,2015-08-23
-Dhaaneshwar S,6-A,2014-12-05</code></pre>
+                        <pre class="bg-light p-2 border rounded"><code>name,class,birthday,father_name,contact_number_1,contact_number_2,corrections,parent_phone
+John Doe,4-A,2016-04-12,Mr Doe,9876543210,9123456780,,+919876543210
+Sarah Connor,5-B,2015-08-23,Mr Connor,9876543211,,,
+Dhaaneshwar S,6-A,2014-12-05,Mr Dhaaneshwar,9876543212,</code></pre>
                     </div>
 
                     <div class="d-grid gap-2">

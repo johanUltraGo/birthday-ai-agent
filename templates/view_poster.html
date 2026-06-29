@@ -35,12 +35,12 @@
                         <form action="{{ url_for('whatsapp_poster', student_id=student.id) }}" method="POST">
                             <div class="input-group">
                                 <span class="input-group-text" id="phone-addon"><i class="bi bi-telephone"></i></span>
-                                <input type="text" name="phone" class="form-control" placeholder="Parent's Phone Number (e.g. +919876543210)" aria-describedby="phone-addon" required>
+                                <input type="text" name="phone" class="form-control" value="{{ student.parent_phone or '' }}" placeholder="Parent's Phone Number (e.g. +919876543210)" aria-describedby="phone-addon" required>
                                 <input type="hidden" name="poster_url" value="{{ request.url_root }}{{ poster_url[1:] if poster_url.startswith('/') else poster_url }}">
                                 <button class="btn btn-success fw-semibold" type="submit">Send WhatsApp</button>
                             </div>
                             <div class="form-text mt-2 text-muted">
-                                Note: Twilio credentials must be configured in your environment. Format: +[CountryCode][Number]
+                                Note: Twilio credentials must be configured in your environment. Format: +[CountryCode][Number]. Saved student phone is prefilled when available.
                             </div>
                         </form>
                     </div>

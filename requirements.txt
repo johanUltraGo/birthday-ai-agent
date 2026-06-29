@@ -7,3 +7,5 @@ gunicorn
 psycopg2-binary
 Flask-Mail
 twilio
+google-api-python-client
+google-auth
